@@ -1,0 +1,53 @@
+
+  .LoginModal {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    right: 40px;
+    bottom: 40px;
+    background-color: black;
+    opacity:1;
+    border: 1px solid #00ff00;
+  }
+
+  .LoginOverlay {
+    background-color: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .SearchModal {
+    font-family: monospace;
+    color: #00ff00;
+    position: absolute;
+    top: 50px;
+    left: 100px;
+    right: 100px;
+    bottom: auto;
+    background-color: #121212;
+    opacity:1;
+      box-shadow: 13px 13px 20px #000000,
+              -13px -13px 20px #1d291d;
+    border: 1px dotted green;
+    padding: 20px;
+  }
+
+  .SearchOverlay {
+    background-color: #121212;
+    opacity: 0.9;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  pre {
+    white-space: pre-line;
+  }

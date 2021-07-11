@@ -1,0 +1,35 @@
+.statusBar_wrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0px;
+    padding-left:10px;
+    padding-right:10px;
+    background-color: black;
+    border-top: 1px solid #006600;
+}
+
+.statusBar_wrapper>div{
+    display:grid;
+    font-family: monospace;
+    color: #00ff00;
+    font-size:12px;
+}
+
+.statusBar_mode {
+    grid-column:1/2;
+    grid-row: 1/2;
+}
+.statusBar_write {
+    grid-column:2/3;
+    text-align:center;
+    grid:1/2;
+}
+.statusBar_buffer {
+    grid-column:3/4;
+    text-align:right;
+    grid-row:1/2;
+}
+
+.CodeMirror{
+    min-height: calc(100vh - 3.5em);
+}
