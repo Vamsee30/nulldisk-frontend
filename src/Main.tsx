@@ -432,6 +432,11 @@ function Main():JSX.Element {
 
           <Modal isOpen={IoLinksIsOpen} className="SearchModal" overlayClassName="SearchOverlay" onRequestClose={()=>setIoLinksIsOpen(false)}>
         <div className="IoLinks_wrapper">
+        <div className="IoLinks_navigation">
+          {(previewId && incomingLinks !==null && outgoingLinks !==null) && (incomingLinks.filter(x=>x['id']==previewId).length>0 || outgoingLinks.filter(x=>x['id']==previewId).length>0) &&
+            <div className="button" onClick={openDocument}>Open</div>
+          }
+        </div>
         <div className="IoLinks_incoming"><span className="title">Incoming Links</span>
             {incomingLinks !==null && 
             resultRows(incomingLinks)}
@@ -440,9 +445,6 @@ function Main():JSX.Element {
             {outgoingLinks !==null &&
             resultRows(outgoingLinks)}
           </div>
-          {(previewId && incomingLinks !==null && outgoingLinks !==null) && (incomingLinks.filter(x=>x['id']==previewId).length>0 || outgoingLinks.filter(x=>x['id']==previewId).length>0) &&
-            <div className="button" onClick={openDocument}>Open</div>
-          }
           <div className="IoLinks_preview">
             <pre>
               {previewId && incomingLinks &&
