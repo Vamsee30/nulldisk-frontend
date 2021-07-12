@@ -40,6 +40,7 @@ function Main():JSX.Element {
   const [results, setResults] = useState<null|Array<IResult>>(null)
   const [previewId, setPreviewId] = useState<null|number>(null)
   const [newChanges, setNewChanges] = useState(false)
+  const [alertText, setAlertText] = useState('')
   const [safeChangeCallback, setSafeChangeCallback] = useState<null|(()=>void)>(null)
   const [dialogChangesIsOpen, setDialogChangesIsOpen] = useState(false)
   const [IoLinksIsOpen, setIoLinksIsOpen] = useState(false)
@@ -94,6 +95,7 @@ function Main():JSX.Element {
   }
 
   function write(Content:string, callback:()=>void){
+    console.log('write function called')
     // This function is passed to vim for :w
     // It must distinguish between a new file vs saving a new file
     if(postId === null){
@@ -114,7 +116,10 @@ function Main():JSX.Element {
       getOutLinks()
       setNewChanges(false)
       // dev: try and extract the filename and print it on the status bar
-      callback()
+      if(typeof(res.id)==='number'){
+        // Do some callback magic
+        callback()
+      }
       console.log(res)
     }}
 
@@ -150,6 +155,7 @@ function Main():JSX.Element {
     if(newChanges === false){
       callback()
     } else {
+      setAlertText('Warning! You have unsaved changes.')
       setSafeChangeCallback(()=>()=>callback())
     }
   }
@@ -190,7 +196,25 @@ function Main():JSX.Element {
       }
     }
   }
-  function deleteDocument(){}
+  function deleteDocument(){
+    const payload = {
+      path: 'notes/'+previewId+'/delete/',
+      method: 'GET',
+      body: null,
+      callback:(res:any)=>{
+        if(res.delete !== false){
+          if(results !== null){
+            setResults(results.filter(x=>x.id != res.delete))
+            setPreviewId(null)
+          }
+        }
+      }
+    }
+    setAlertText('Are you sure you want to delete this forever?')
+    setSafeChangeCallback(()=>()=>{
+      setPayload(payload)
+    })
+  }
 
   function forceLogin(){
     setAuthModal(true)
@@ -206,6 +230,7 @@ function Main():JSX.Element {
     }
     setPayload(payload)
   }
+
 
   function getBacklinks(){
     const payload = {
@@ -420,14 +445,14 @@ function Main():JSX.Element {
         </Modal>
 
         <Modal isOpen={ dialogChangesIsOpen } className="SearchModal" overlayClassName="SearchOverlay"><div className="alertBox">
-          <span className="alertText">Warning! You have unsaved changes.</span>
+          <span className="alertText">{alertText}</span>
           <div className="button" onClick={()=>{
             if(safeChangeCallback !==null){
               safeChangeCallback()
             }
             setDialogChangesIsOpen(false)
           }}>Override</div>
-          <div className="button" onClick={()=>setDialogChangesIsOpen(false)}>Close</div>
+          <div className="button" onClick={()=>setDialogChangesIsOpen(false)}>Abort</div>
           </div></Modal>
 
           <Modal isOpen={IoLinksIsOpen} className="SearchModal" overlayClassName="SearchOverlay" onRequestClose={()=>setIoLinksIsOpen(false)}>

@@ -6,6 +6,19 @@
     padding-right:10px;
     background-color: black;
     border-top: 1px solid #006600;
+
+      -moz-transition: all 0.2s ease-in;
+      -o-transition: all 0.2s ease-in;
+      -webkit-transition: all 0.2s ease-in;
+      transition: all 0.2s ease-in;
+}
+
+.green_highlight {
+    background-color: #00ff00;
+}
+
+.green_highlight > div {
+    color: black !important;
 }
 
 .statusBar_wrapper>div{

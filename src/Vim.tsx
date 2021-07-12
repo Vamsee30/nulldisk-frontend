@@ -33,6 +33,7 @@ interface IState{
   commandDisplay: string,
   vimMode: string,
   widgets: Array<IWidget>,
+  highlight: boolean,
 }
 
 interface IWidget {
@@ -67,6 +68,7 @@ class Vim extends React.Component<IProps, IState> {
       commandDisplay: '',
       vimMode: 'normal',
       widgets: [],
+      highlight: false,
     }
     this.editor = null;
     this.vimrc();
@@ -89,6 +91,9 @@ class Vim extends React.Component<IProps, IState> {
         if(this.state.lastSig !== sig){
           this.setState({writeStatus:'Unsaved changes...'})
           this.props.changesCallback(true)
+        } else{
+          this.setState({writeStatus:'No changes made'})
+          this.props.changesCallback(false)
         }
       });
 
@@ -123,6 +128,13 @@ class Vim extends React.Component<IProps, IState> {
     if(this.editor){
       var doc = this.editor.getDoc()
       doc.setValue(text)
+      this.setState({
+        currentSig:md5(text),
+        lastSig:md5(text)
+      })
+
+      this.setState({writeStatus:'All Systems Go!'})
+      console.log('flushed data')
     }
   }
 
@@ -184,19 +196,25 @@ class Vim extends React.Component<IProps, IState> {
       this.props.save(this.state.content,()=>this.props.quit(true))
     }
     CodeMirror.commands.save = ()=>{
-      this.props.save(this.state.content,()=>{})
-      this.props.changesCallback(false)
-      this.setState({
-        writeStatus:this.props.writeStatus,
-        lastSig: md5(this.state.content)
-      });
+      this.props.save(this.state.content,()=>{
+        this.props.changesCallback(false)
+        this.setState({
+          writeStatus:this.props.writeStatus,
+          lastSig: md5(this.state.content),
+          highlight: true,
+        });
+        setTimeout(()=>{
+          this.setState({highlight: false})
+        }, 1000)
+      })
     };
   }
   
 
   statusBars = () => {
+    const highlight = this.state.highlight ? 'green_highlight':''
     return (
-      <div className="statusBar_wrapper">
+      <div className={`statusBar_wrapper ${highlight}`}>
       <div className="statusBar_write">{this.state.writeStatus}</div>
         <div className="statusBar_buffer">Key buffer: {this.state.commandDisplay}</div>
         <div className="statusBar_mode">Vim mode: { this.state.vimMode }</div>

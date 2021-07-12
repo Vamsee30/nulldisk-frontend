@@ -26,6 +26,7 @@ function useApi(props:IProps, payload:IPayload){
     // const apiUrl = '/api/'
     const [accessKeyIsValid, setAccessKeyIsValid] = useState<null|boolean>(null)
 
+    const validHttpCodes = [200, 201, 202, 203, 204]
     
     const go = useCallback((accessKey)=>{
         const {body, method, path} = payload
@@ -43,7 +44,7 @@ function useApi(props:IProps, payload:IPayload){
         }
         fetch(apiUrl+path,options)
         .then(response=>{
-            if(response.status !== 200){
+            if(!validHttpCodes.includes(response.status)){
                 setAccessKeyIsValid(false)
             } else {
                 setAccessKeyIsValid(true)
@@ -75,7 +76,7 @@ function useApi(props:IProps, payload:IPayload){
             }
             fetch(apiUrl+'token/refresh/', options)
             .then(response=>{
-                if(response.status !== 200 ){
+                if(!validHttpCodes.includes(response.status)){
                     setRefreshKeyIsValid(false)
                     // this needs to trigger a login event
                 } else {
@@ -111,7 +112,7 @@ function useApi(props:IProps, payload:IPayload){
             fetch(apiUrl+'token/', options)
             .then(response=>{
                 console.log(response.status)
-                if(response.status !== 200){
+                if(!validHttpCodes.includes(response.status)){
                     setAccessKeyIsValid(null)
                     setRefreshKeyIsValid(null)
                     props.fail()
