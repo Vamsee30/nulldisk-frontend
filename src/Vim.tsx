@@ -9,6 +9,7 @@ import md5 from 'md5';
 //import CodeMirror from '@jkvim/react-codemirror2'
 //require('codemirror/lib/codemirror.js');
 require('codemirror/mode/markdown/markdown.js');
+require('codemirror/mode/gfm/gfm.js');
 require('codemirror/mode/javascript/javascript');
 require('codemirror/keymap/vim.js');
 require('codemirror/addon/dialog/dialog.js');
@@ -78,7 +79,7 @@ class Vim extends React.Component<IProps, IState> {
 
     if(this.codeInput.current){
 
-      this.editor = CodeMirror.fromTextArea(this.codeInput.current,{mode:'markdown', keyMap:'vim',theme:'the-matrix', lineNumbers:true, showCursorWhenSelecting: true, lineWrapping:true});
+      this.editor = CodeMirror.fromTextArea(this.codeInput.current,{mode:'gfm', keyMap:'vim',theme:'the-matrix', lineNumbers:true, showCursorWhenSelecting: true, lineWrapping:true});
       var keys = '';
       this.editor.getDoc().setValue(this.props.content)
       this.editor.on("change",(edit)=>{
