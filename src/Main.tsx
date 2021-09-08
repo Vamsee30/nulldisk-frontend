@@ -34,7 +34,6 @@ function Main():JSX.Element {
   const [authModalIsOpen, setAuthModal] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [vimKey, setVimKey] = useState(1)
   const [searchPanelIsOpen, setSearchPanelIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<null|Array<IResult>>(null)
@@ -46,17 +45,17 @@ function Main():JSX.Element {
   const [IoLinksIsOpen, setIoLinksIsOpen] = useState(false)
   const [incomingLinks, setIncomingLinks] = useState<Array<IResult>>([])
   const [outgoingLinks, setOutgoingLinks] = useState<Array<IResult>>([])
-  const [searchFilters, setSearchFilters] = useState<ISearchFilters>({
+  const defaultFilters:ISearchFilters = {
     primary: 'date_created',
     when: 'after',
     date: null,
     order_by: 'date_created',
     sort: 'DESC'
-  })
+  }
+  const [searchFilters, setSearchFilters] = useState<ISearchFilters>(defaultFilters)
 
   const vimRef = useRef<Vim>(null)
 
-  const apiUrl = '/'
 
   const opts = {
     username: username,
@@ -80,9 +79,11 @@ function Main():JSX.Element {
     setAuthModal(false)
     setUsername(res.auth)
   }
-  function openAuthModal(){ setAuthModal(true) }
   function closeAuthModal(){
     if(auth){ setAuthModal(false) }
+    if(vimRef.current){
+      vimRef.current.focus()
+    }
   }
 
   function _setResults(res:Array<any>){
@@ -269,6 +270,7 @@ function Main():JSX.Element {
         // Todo handle null results
       }
     }
+    setSearchFilters(defaultFilters)
     setPayload(payload)
     setPreviewId(null)
   }
@@ -391,7 +393,14 @@ function Main():JSX.Element {
 
         <Modal
         isOpen={searchPanelIsOpen}
-        onRequestClose={()=>setSearchPanelIsOpen(false)}
+        onRequestClose={()=>{
+          setSearchPanelIsOpen(false)
+          if(vimRef.current){
+            vimRef.current.focus()
+          }
+
+            
+        }}
         className='SearchModal'
         overlayClassName='SearchOverlay'
         >
@@ -455,7 +464,12 @@ function Main():JSX.Element {
           <div className="button" onClick={()=>setDialogChangesIsOpen(false)}>Abort</div>
           </div></Modal>
 
-          <Modal isOpen={IoLinksIsOpen} className="SearchModal" overlayClassName="SearchOverlay" onRequestClose={()=>setIoLinksIsOpen(false)}>
+          <Modal isOpen={IoLinksIsOpen} className="SearchModal" overlayClassName="SearchOverlay" onRequestClose={()=>{ 
+            setIoLinksIsOpen(false)
+            if(vimRef.current){
+              vimRef.current.focus()
+            }
+          }}>
         <div className="IoLinks_wrapper">
         <div className="IoLinks_navigation">
           {(previewId && incomingLinks !==null && outgoingLinks !==null) && (incomingLinks.filter(x=>x['id']==previewId).length>0 || outgoingLinks.filter(x=>x['id']==previewId).length>0) &&

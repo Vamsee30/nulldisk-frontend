@@ -111,9 +111,17 @@ class Vim extends React.Component<IProps, IState> {
       CodeMirror.on(this.editor, 'vim-mode-change', (e:any)=> {
         this.setState({vimMode:e.mode})
       });
+
+      this.focus()
     
     }
 
+  }
+
+  focus = () =>{
+    if(this.editor){
+      this.editor.focus()
+    }
   }
 
   insert = (text:string) => {
@@ -122,6 +130,7 @@ class Vim extends React.Component<IProps, IState> {
       var cursor = doc.getCursor()
       doc.replaceRange(text,cursor)
     }
+    this.focus()
   }
 
 
@@ -137,6 +146,7 @@ class Vim extends React.Component<IProps, IState> {
       this.setState({writeStatus:'All Systems Go!'})
       console.log('flushed data')
     }
+    this.focus()
   }
 
   insert_image = (line:number,src:string,width:null|number) => {
