@@ -4,13 +4,22 @@ import Main from './Main';
 import reportWebVitals from './reportWebVitals';
 import {store} from './state/index'
 import {Provider} from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
 
 
 ReactDOM.render(
   <React.StrictMode>
+  <Router>
     <Provider store={store}>
-      <Main />
+      <Route path='/'>
+        <Main />
+      </Route>
     </Provider>
+  </Router>
   </React.StrictMode>,
 
   document.getElementById('root')

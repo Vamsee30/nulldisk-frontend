@@ -2,10 +2,6 @@
 
 # dependencies
 /node_modules/*
-!/node_modules/codemirror
-!/node_modules/@types
-node_modules/@types/*
-!/node_modules/@types/codemirror
 /.pnp
 .pnp.js
 
