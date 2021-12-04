@@ -106,6 +106,8 @@ function Review(props:IProps):JSX.Element {
       results.push({content: match[1].trim(), index:match.index})
     }
     results.sort((a,b)=>a.index-b.index)
+    console.log('SHOWW MEE')
+    console.log(results)
     return results.map((x)=>x.content)
   }
 
@@ -194,6 +196,10 @@ function Review(props:IProps):JSX.Element {
     return <></>
   }
 
+  function escapeRegex(text:string):string{
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  }
+
   useEffect(()=>{
     var jsxcards:Array<any> = []
     if (cards !==null ){
@@ -204,7 +210,7 @@ function Review(props:IProps):JSX.Element {
           for(var i=0; i < contentArray.length; i=i+2){
             const components = contentArray[i].split(word)
             const visibility = (hidden)?'hidden':'visible';
-            if(contentArray[i].match(word)){
+            if(contentArray[i].match(escapeRegex(word))){
               var insert =[]
               for(var y=0; y < components.length; y++){
                 insert.push(components[y])
@@ -231,6 +237,7 @@ function Review(props:IProps):JSX.Element {
   useEffect(()=>{
     if(due.length>0){
       console.log(`Loading card ${pageIndex}`)
+      console.log(due[pageIndex].note.id)
       props.updatePostId(due[pageIndex].note.id)
       var newCards = extractCards(due[pageIndex].note.content).map((card)=>{
         const blanks = extractBlanks(card).map((blank)=>(
@@ -262,7 +269,7 @@ function Review(props:IProps):JSX.Element {
     const overDuePages = deck.filter((x)=>x.repetitions>0 && x.due_date <= today)
     var ignore = [...incorrect,...correct]
     const new_due = [...newPages,...overDuePages].filter(x=>!ignore.includes(x.note.id))
-    if (JSON.stringify(new_due.map(x=>x.note.id)) != JSON.stringify(due.map(x=>x.note.id)) ){
+    if (JSON.stringify(new_due.map(x=>x.note.content)) != JSON.stringify(due.map(x=>x.note.content)) ){
       setPageIndex(0)
       setCardIndex(0)
       setDue(new_due)

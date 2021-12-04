@@ -126,6 +126,7 @@ function Main():JSX.Element {
         }
         updateAuth(false)
         setAuthModal(true)
+        localStorage.clear()
       }
     }
     if(override){
@@ -170,6 +171,12 @@ function Main():JSX.Element {
         setPreviewId(null)
       })
     }
+  }
+
+  function startReview(){
+    safeClose(()=>{
+      setReviewPanelIsOpen(true)
+    })
   }
 
 
@@ -468,8 +475,8 @@ function Main():JSX.Element {
 
           <div className="main_buttons_wrapper">
             <div className="button" onClick={()=>setSearchPanelIsOpen(true)}>Explorer</div>
-            <div className="button" onClick={()=>setReviewPanelIsOpen(true)}>Review</div>
             <div className="button" onClick={()=>newFile()}>New File</div>
+            <div className="button" onClick={()=>startReview()}>Review</div>
             <div className="button" onClick={()=>setIoLinksIsOpen(true)}><span style={(incomingLinks.length>0||outgoingLinks.length>0) ? ({color:'red', fontWeight:'bold'}) : ({}) }>Connections { incomingLinks.length}/{outgoingLinks.length}</span></div>
           </div>
     </div>
