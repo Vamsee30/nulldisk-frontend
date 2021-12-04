@@ -1,14 +1,24 @@
 import { useCallback, useMemo } from 'react'
-import { addPayload } from './actions'
+import { setUsername,setPassword,setModalOpen } from './actions'
 import { useSelector, useDispatch } from 'react-redux'
-import {IPayload} from './reducer'
+import {IAuth} from './reducer'
 import {AppState} from '../index'
 
-export function useAddPayload(): (payload:IPayload)=>void {
+export function useSetUsername(): (payload:string)=>void {
   const dispatch = useDispatch()
-  return useCallback((payload)=>dispatch(addPayload(payload)), [dispatch])
+  return useCallback((payload)=>dispatch(setUsername(payload)), [dispatch])
 }
 
-export function useGetPayload():IPayload {
+export function useSetPassword(): (payload:string)=>void {
+  const dispatch = useDispatch()
+  return useCallback((payload)=>dispatch(setPassword(payload)), [dispatch])
+}
+
+export function useSetModalOpen(): (payload:boolean)=>void {
+  const dispatch = useDispatch()
+  return useCallback((payload)=>dispatch(setModalOpen(payload)), [dispatch])
+}
+
+export function useGetAuthState():IAuth {
   return useSelector((state:AppState)=>state.payload)
 }

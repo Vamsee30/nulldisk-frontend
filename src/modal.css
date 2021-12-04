@@ -48,6 +48,48 @@
     z-index: 1000;
   }
 
+  .DarkModal{
+    font-family: monospace;
+    color: #00ff00;
+    position: absolute;
+    top: 50px;
+    left: 100px;
+    right: 100px;
+    bottom: auto;
+    background-color: #000000;
+    opacity:1;
+      box-shadow: 13px 13px 20px #000000,
+              -13px -13px 20px #1d291d;
+    border: 1px dotted green;
+    padding: 20px;
+  }
+
+    @media screen and (max-width: 900px) {
+      .DarkModal{
+        left: 10px;
+        right: 10px;
+      }
+      .SearchModal{
+        left: 30px;
+        right: 20px;
+      }
+    }
+
+  .OpaqueOverlay {
+    background-color: #121212;
+    opacity: 1.0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+
+
   pre {
     white-space: pre-line;
   }

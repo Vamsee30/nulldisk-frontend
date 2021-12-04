@@ -1,23 +1,32 @@
 import { createReducer } from '@reduxjs/toolkit'
-import {addPayload} from './actions'
+import {setUsername, setPassword, setModalOpen} from './actions'
 
-export interface IPayload{
-    path:string,
-    method:string,
-    body:{}|null,
-    callback: (result:any)=>any,
+export interface IAuth{
+  username: string;
+  password: string;
+  modalOpen: boolean;
 }
 
-const initialState:IPayload = {
-  path: '',
-  method: '',
-  body: null,
-  callback: ()=>null
+const initialState:IAuth = {
+  username: '',
+  password: '',
+  modalOpen: false
 }
 
-export default createReducer(initialState, builder=>
+export const store = createReducer(initialState, (builder) =>
   builder
-.addCase(addPayload, (state:IPayload ,action)=>{
-  state = action.payload
-})
-  )
+    .addCase(setUsername, (state, action) => ({
+      ...state,
+      username: action.payload,
+    }))
+    .addCase(setPassword, (state, action) => ({
+      ...state,
+      password: action.payload,
+    }))
+    .addCase(setModalOpen, (state, action) => ({
+      ...state,
+      modalOpen: action.payload,
+    }))
+);
+
+export default store

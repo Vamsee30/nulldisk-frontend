@@ -1,3 +1,4 @@
+import './index.css'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Main from './Main';
@@ -10,16 +11,18 @@ import {
   Route,
 } from "react-router-dom";
 
-
 ReactDOM.render(
   <React.StrictMode>
-  <Router>
-    <Provider store={store}>
-      <Route path='/'>
-        <Main />
-      </Route>
-    </Provider>
-  </Router>
+  <Provider store={store}>
+  <Router><Switch>
+
+
+  <Route path='/'>
+  <Main />
+  </Route>
+
+  </Switch></Router>
+  </Provider>
   </React.StrictMode>,
 
   document.getElementById('root')

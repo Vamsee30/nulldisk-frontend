@@ -2,6 +2,8 @@ import React, {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import useApi, {IPayload} from './hooks/useApi';
 import Modal from 'react-modal'
 import Vim from './Vim';
+import Auth from './Auth';
+import Review from './Review';
 import './Main.css';
 import './modal.css';
 var dateFormat = require("dateformat");
@@ -9,6 +11,7 @@ Modal.setAppElement('#root')
 
 type orderByDate = 'date_created'|'date_updated'
 type sortType = 'DESC'|'ASC'
+
 interface ISearchFilters {
   primary: string,
   when: string,
@@ -32,9 +35,8 @@ function Main():JSX.Element {
   const [content, updateContent] = useState<string>('');
   const [auth, updateAuth] = useState<boolean>(false)
   const [authModalIsOpen, setAuthModal] = useState(false)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [searchPanelIsOpen, setSearchPanelIsOpen] = useState(false)
+  const [reviewPanelIsOpen, setReviewPanelIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<null|Array<IResult>>(null)
   const [previewId, setPreviewId] = useState<null|number>(null)
@@ -56,31 +58,15 @@ function Main():JSX.Element {
 
   const vimRef = useRef<Vim>(null)
 
+  const [payload, setPayload] = useState<IPayload>({
+    path: '',
+    method: 'GET',
+    body: null,
+    callback: ()=>null
+  })
+  //useApi(opts, payload)
 
-  const opts = {
-    username: username,
-    password: password,
-    fail: forceLogin
-  }
-
-  const defaultPayload = {
-    path: 'notes/validateAuth/',
-      method: 'GET',
-      body: null,
-      callback: loginAction
-  }
-
-  const [payload, setPayload] = useState<IPayload>(defaultPayload)
-  useApi(opts, payload)
-
-
-  function loginAction(res:any){
-    updateAuth(true)
-    setAuthModal(false)
-    setUsername(res.auth)
-  }
   function closeAuthModal(){
-    if(auth){ setAuthModal(false) }
     if(vimRef.current){
       vimRef.current.focus()
     }
@@ -217,21 +203,6 @@ function Main():JSX.Element {
     })
   }
 
-  function forceLogin(){
-    setAuthModal(true)
-    updateAuth(false)
-  }
-  
-  function submitLogin(){
-    const payload = {
-      path:'notes/validateAuth/',
-      method: 'GET',
-      body: null,
-      callback: loginAction
-    }
-    setPayload(payload)
-  }
-
 
   function getBacklinks(){
     const payload = {
@@ -276,6 +247,9 @@ function Main():JSX.Element {
   }
 
   useEffect(()=>{
+    console.log(postId)
+    console.log(auth)
+
     if(auth && postId){
       console.log('selected new post:'+postId)
       // logged in & postId has changed...
@@ -361,35 +335,30 @@ function Main():JSX.Element {
     return fresults
   }
 
+
   return (
     <div className='main'>
+    <Auth payload={payload} setPayload={setPayload} setAuth={updateAuth} closeAction={closeAuthModal}/>
       <Vim  content={content} save={write} quit={quit} ref={vimRef} changesCallback={setNewChanges}/>
-      <Modal
-        isOpen={authModalIsOpen}
-        onRequestClose={closeAuthModal}
-        className='SearchModal'
-        overlayClassName='SearchOverlay'
+        
+        <Modal
+        isOpen={reviewPanelIsOpen}
+        onRequestClose={()=>{}}
+        className='DarkModal'
+        overlayClassName='OpaqueOverlay'
         >
-        <div className="IoLinks_wrapper">
-        <div className="IoLinks_incoming">
-        
-        <form onSubmit={(e)=>{
-          e.preventDefault()
-          submitLogin()
-        }}>
-            <input name='username' className='greenput_narrow' onChange={(e)=>{
-              setUsername(e.target.value)
-            }}/><br />
-            <input type="password" name='password' className='greenput_narrow' onChange={(e)=>{
-              setPassword(e.target.value)
-            }}/><br />
-            <button className='greenput_narrow' type="submit">Login</button>
-          </form>
-        
-        </div>
-        <div className="IoLinks_outgoing"><h1>NullDisk</h1><ul><li>Military Grade Encryption</li><li>Zettelkasten Schema</li><li>VIM Keybindings</li></ul></div>
-        </div>
-        </Modal> 
+        <Review 
+        setPayload={setPayload} 
+        closeModal={()=>{
+          setReviewPanelIsOpen(false)
+          if(vimRef.current){
+            vimRef.current.focus()
+          }
+        }} 
+        updatePostId={updatePostId}
+        backLinks={[...outgoingLinks,...incomingLinks]}
+        />
+        </Modal>
 
         <Modal
         isOpen={searchPanelIsOpen}
@@ -499,6 +468,7 @@ function Main():JSX.Element {
 
           <div className="main_buttons_wrapper">
             <div className="button" onClick={()=>setSearchPanelIsOpen(true)}>Explorer</div>
+            <div className="button" onClick={()=>setReviewPanelIsOpen(true)}>Review</div>
             <div className="button" onClick={()=>newFile()}>New File</div>
             <div className="button" onClick={()=>setIoLinksIsOpen(true)}><span style={(incomingLinks.length>0||outgoingLinks.length>0) ? ({color:'red', fontWeight:'bold'}) : ({}) }>Connections { incomingLinks.length}/{outgoingLinks.length}</span></div>
           </div>
